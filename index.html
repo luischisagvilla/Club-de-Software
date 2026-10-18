@@ -2,7 +2,492 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Club de Software</title>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap");
+
+        /* ============ Variables ============ */
+        :root {
+            --bg: #09090b;
+            --card: #18181b;
+            --negro: #000;
+            --texto: #fff;
+            --texto-suave: #a1a1aa;
+            --texto-tenue: #7c7c86;
+            --borde: #2a2a30;
+            --morado: #6d28d9;
+            --morado-claro: #7c3aed;
+            --morado-borde: #9b5de5;
+
+            --fuente-titulo: "Montserrat", "Segoe UI", Arial, sans-serif;
+            --fuente-texto: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+
+            --ico-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+            --ico-flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 21V4h11l-2 4 2 4H5'/%3E%3C/svg%3E");
+            --ico-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z'/%3E%3C/svg%3E");
+            --ico-imagen: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23161618' stroke='%23161618' stroke-width='2' stroke-linejoin='round'%3E%3Ccircle cx='17.5' cy='6.5' r='3'/%3E%3Cpath d='M3 19l6-11 4.5 8 2-3L21 19z'/%3E%3C/svg%3E");
+        }
+
+        /* ============ Base ============ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: var(--bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0 auto;
+            max-width: 1000px;
+            min-height: 100vh;
+            padding: 0 1.5rem;
+            color: var(--texto);
+            font-family: var(--fuente-texto);
+            line-height: 1.5;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            grid-template-rows: auto auto auto auto 1fr;
+            align-content: start;
+        }
+
+        /* Los separadores del HTML no forman parte del diseño */
+        hr,
+        br {
+            display: none;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:focus-visible,
+        input:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--morado-borde);
+            outline-offset: 2px;
+        }
+
+        /* ============ Encabezado ============ */
+        header {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            padding: 1.75rem 0 1.5rem;
+        }
+
+        header h1 {
+            grid-column: 1;
+            margin: 0;
+            text-align: center;
+            font-family: var(--fuente-titulo);
+            font-weight: 800;
+            font-size: clamp(1.9rem, 4.4vw, 2.6rem);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        header h2 {
+            grid-column: 1;
+            margin: 0.55rem 0 0;
+            text-align: center;
+            font-family: var(--fuente-titulo);
+            font-weight: 700;
+            font-size: 0.55rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--texto-suave);
+        }
+
+        /* font-size: 0 oculta los "|" del HTML; los enlaces restauran su tamaño */
+        header nav {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            justify-self: end;
+            display: flex;
+            gap: 2.2rem;
+            font-size: 0;
+        }
+
+        header nav a {
+            font-family: var(--fuente-titulo);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--texto-suave);
+            transition: color 0.2s;
+        }
+
+        header nav a:first-child,
+        header nav a:hover {
+            color: var(--texto);
+        }
+
+        /* ============ Información ============ */
+        #informacion {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr;
+            column-gap: 1.5rem;
+        }
+
+        /* Carrusel de imágenes del club */
+        .carrusel {
+            order: -1;
+            grid-column: 1 / -1;
+            position: relative;
+            height: clamp(200px, 34vw, 290px);
+            overflow: hidden;
+            /* Marcador visible si una imagen no carga */
+            background: var(--ico-imagen) center / 130px no-repeat, var(--negro);
+            border: 1px solid var(--morado-borde);
+            border-radius: 14px;
+            box-shadow: 0 0 22px rgba(155, 93, 229, 0.18);
+        }
+
+        .carrusel-pista {
+            display: flex;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .carrusel-pista::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carrusel-pista img {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            scroll-snap-align: start;
+        }
+
+        .carrusel-pista img.sin-imagen {
+            opacity: 0;
+        }
+
+        .carrusel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            padding: 0 0 3px;
+            display: grid;
+            place-items: center;
+            color: var(--texto);
+            font-size: 1.5rem;
+            line-height: 1;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .carrusel-btn:hover {
+            background: var(--morado);
+        }
+
+        .carrusel-btn.anterior { left: 0.8rem; }
+        .carrusel-btn.siguiente { right: 0.8rem; }
+
+        .carrusel-puntos {
+            position: absolute;
+            bottom: 0.8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .carrusel-puntos button {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.45);
+            border: 0;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: width 0.25s, background 0.25s;
+        }
+
+        .carrusel-puntos button.activo {
+            width: 22px;
+            background: var(--morado-borde);
+        }
+
+        /* Título "Información" */
+        #informacion::before {
+            content: "Información";
+            grid-column: 1 / -1;
+            margin: 1.4rem 0 2.2rem 0.4rem;
+            font-family: var(--fuente-titulo);
+            font-weight: 800;
+            font-size: 1.35rem;
+            line-height: 1.2;
+        }
+
+        #informacion h3 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.9rem;
+            margin: 1.2rem 0 0.6rem;
+            font-family: var(--fuente-titulo);
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--texto-suave);
+        }
+
+        #informacion h3::before {
+            content: "";
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: #e9e9ec;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 20px;
+        }
+
+        #informacion h3:nth-of-type(1)::before { background-image: var(--ico-check); }
+        #informacion h3:nth-of-type(2)::before { background-image: var(--ico-flag); }
+        #informacion h3:nth-of-type(3)::before { background-image: var(--ico-star); }
+
+        #informacion > p {
+            margin: 0 auto 1rem;
+            max-width: 220px;
+            text-align: center;
+            font-size: 0.72rem;
+            line-height: 1.6;
+            color: var(--texto-tenue);
+        }
+
+        /* ============ Objetivos ============ */
+        #objetivos {
+            grid-column: 1;
+            align-self: start;
+            padding: 3.2rem 2rem 0 0.4rem;
+        }
+
+        #objetivos h3,
+        #unirse h3 {
+            margin: 0 0 1rem;
+            font-family: var(--fuente-titulo);
+            font-weight: 800;
+            font-size: 1.35rem;
+            line-height: 1.2;
+        }
+
+        #objetivos p {
+            margin: 0 0 1rem;
+            font-size: 0.72rem;
+            line-height: 1.6;
+            color: var(--texto-tenue);
+        }
+
+        /* ============ Formulario ============ */
+        #unirse {
+            grid-column: 2;
+            align-self: start;
+            padding-top: 3.2rem;
+        }
+
+        #unirse h3 {
+            text-align: center;
+            margin-bottom: 1.1rem;
+        }
+
+        #unirse form {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 1rem 1rem;
+            padding: 1.8rem 1.8rem 1.6rem;
+            background: var(--card);
+            border-radius: 22px;
+        }
+
+        #unirse label {
+            text-align: right;
+            font-family: var(--fuente-titulo);
+            font-weight: 800;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+
+        #unirse input {
+            width: 100%;
+            height: 2.5rem;
+            padding: 0 0.8rem;
+            color: var(--texto);
+            font: inherit;
+            background: var(--bg);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        #unirse input:focus {
+            border-color: var(--morado-borde);
+        }
+
+        #unirse button {
+            grid-column: 1 / -1;
+            justify-self: center;
+            padding: 0.6rem 1.5rem;
+            color: var(--texto);
+            font-family: var(--fuente-titulo);
+            font-weight: 700;
+            font-size: 0.7rem;
+            background: var(--morado);
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #unirse button:hover {
+            background: var(--morado-claro);
+        }
+
+        /* ============ Cita ============ */
+        blockquote {
+            grid-column: 1 / -1;
+            margin: 3.2rem auto 3rem;
+            max-width: 440px;
+            text-align: center;
+            font-family: Arial, "Segoe UI", sans-serif;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: var(--texto-suave);
+        }
+
+        blockquote p {
+            margin: 0;
+        }
+
+        blockquote cite {
+            display: block;
+            margin-top: 0.15rem;
+            font-style: normal;
+            font-weight: 700;
+            color: #b9b9c1;
+        }
+
+        /* ============ Pie de página ============ */
+        footer {
+            grid-column: 1 / -1;
+            padding: 3rem 1rem 2.2rem;
+            text-align: center;
+            background: var(--negro);
+            /* Extiende el fondo negro hasta los bordes de la pantalla */
+            box-shadow: 0 0 0 100vmax var(--negro);
+            clip-path: inset(0 -100vmax);
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* font-size: 0 oculta los "|" del HTML; los enlaces restauran su tamaño */
+        footer p:first-child {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            row-gap: 0.8rem;
+            font-size: 0;
+        }
+
+        footer a {
+            padding: 0 1.4rem;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            color: var(--texto-tenue);
+            border-left: 1px solid #e5e5e5;
+            transition: color 0.2s;
+        }
+
+        footer a:first-child {
+            border-left: 0;
+        }
+
+        footer a:hover {
+            color: var(--texto);
+        }
+
+        footer p:last-child {
+            margin-top: 2.4rem;
+            font-size: 0.7rem;
+            color: var(--texto-tenue);
+        }
+
+        /* ============ Escritorio: tres columnas de información ============ */
+        @media (min-width: 761px) {
+            #informacion {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .carrusel                       { grid-row: 1; }
+            #informacion::before            { grid-row: 2; }
+
+            #informacion h3:nth-of-type(1) { grid-column: 1; grid-row: 3; }
+            #informacion h3:nth-of-type(2) { grid-column: 2; grid-row: 3; }
+            #informacion h3:nth-of-type(3) { grid-column: 3; grid-row: 3; }
+
+            #informacion > p:nth-of-type(1) { grid-column: 1; grid-row: 4; }
+            #informacion > p:nth-of-type(2) { grid-column: 2; grid-row: 4; }
+            #informacion > p:nth-of-type(3) { grid-column: 3; grid-row: 4; }
+        }
+
+        /* ============ Móvil ============ */
+        @media (max-width: 760px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                row-gap: 1.2rem;
+            }
+
+            header nav {
+                grid-column: 1;
+                grid-row: auto;
+                justify-self: center;
+                gap: 1.4rem;
+            }
+
+            #objetivos,
+            #unirse {
+                grid-column: 1;
+                padding-right: 0;
+            }
+
+            #unirse form {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 1.4rem;
+            }
+
+            #unirse label {
+                text-align: left;
+            }
+
+            #unirse input {
+                margin-bottom: 0.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -23,7 +508,17 @@
 
     <!-- Sección de Información y Presentación -->
     <section id="informacion">
-        <p>[Imagen del Club]</p>
+        <!-- Carrusel: cambia el nombre de cada archivo en src="..." -->
+        <div class="carrusel" aria-label="Imágenes del club">
+            <div class="carrusel-pista">
+                <img src="imagen1.jpg" alt="Imagen 1 del club">
+                <img src="imagen2.jpeg" alt="Imagen 2 del club">
+                <img src="imagen3.jpeg" alt="Imagen 3 del club">
+            </div>
+            <button type="button" class="carrusel-btn anterior" aria-label="Imagen anterior">&#8249;</button>
+            <button type="button" class="carrusel-btn siguiente" aria-label="Imagen siguiente">&#8250;</button>
+            <div class="carrusel-puntos"></div>
+        </div>
         
         <h3>¿Qué es el club?</h3>
         <p>Un club de software (o club de desarrollo de software) es una comunidad o agrupación de personas con intereses comunes en la informática, la programación y las nuevas tecnologías.</p>
@@ -83,8 +578,77 @@
             <a href="#">Instagram</a> | 
             <a href="#">WhatsApp</a>
         </p>
-        <p>Contacto del líder del club</p>
+        <p>Todos los derechos reservados</p>
     </footer>
+
+    <script>
+        (function () {
+            var carrusel = document.querySelector(".carrusel");
+            var pista = carrusel.querySelector(".carrusel-pista");
+            var imagenes = pista.querySelectorAll("img");
+            var puntos = carrusel.querySelector(".carrusel-puntos");
+            var actual = 0;
+            var temporizador;
+            var sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            // Un punto por imagen; si una imagen no carga, se muestra el marcador
+            imagenes.forEach(function (img, i) {
+                var punto = document.createElement("button");
+                punto.type = "button";
+                punto.setAttribute("aria-label", "Ir a la imagen " + (i + 1));
+                punto.addEventListener("click", function () { ir(i); });
+                puntos.appendChild(punto);
+                img.addEventListener("error", function () { img.classList.add("sin-imagen"); });
+            });
+
+            function marcar() {
+                Array.prototype.forEach.call(puntos.children, function (p, i) {
+                    p.classList.toggle("activo", i === actual);
+                });
+            }
+
+            function ir(i) {
+                actual = (i + imagenes.length) % imagenes.length;
+                pista.scrollTo({ left: actual * pista.clientWidth, behavior: sinMovimiento ? "auto" : "smooth" });
+                marcar();
+            }
+
+            function iniciar() {
+                if (sinMovimiento) return;
+                detener();
+                temporizador = setInterval(function () { ir(actual + 1); }, 5000);
+            }
+
+            function detener() {
+                clearInterval(temporizador);
+            }
+
+            carrusel.querySelector(".anterior").addEventListener("click", function () { ir(actual - 1); });
+            carrusel.querySelector(".siguiente").addEventListener("click", function () { ir(actual + 1); });
+
+            // Mantiene el punto activo al deslizar con el dedo o el mouse
+            pista.addEventListener("scroll", function () {
+                var i = Math.round(pista.scrollLeft / pista.clientWidth);
+                if (i !== actual && i >= 0 && i < imagenes.length) {
+                    actual = i;
+                    marcar();
+                }
+            });
+
+            window.addEventListener("resize", function () {
+                pista.scrollTo({ left: actual * pista.clientWidth, behavior: "auto" });
+            });
+
+            // Pausa el avance automático mientras la persona interactúa
+            carrusel.addEventListener("mouseenter", detener);
+            carrusel.addEventListener("mouseleave", iniciar);
+            carrusel.addEventListener("focusin", detener);
+            carrusel.addEventListener("focusout", iniciar);
+
+            marcar();
+            iniciar();
+        })();
+    </script>
 
 </body>
 </html>
